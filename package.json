@@ -1,8 +1,9 @@
 {
   "name": "shadow-tailwind",
-  "version": "1.0.0",
-  "description": "Tailwind build utilities for customElements",
+  "version": "1.0.1",
+  "description": "A Vite plugin to use computed Tailwind styles of files in your code.",
   "type": "module",
+  "repository": "https://github.com/luckydye/shadow-tailwind",
   "dependencies": {
     "autoprefixer": "^10.4.19",
     "dependency-tree": "^11.0.1",
