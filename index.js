@@ -17,8 +17,9 @@ export function dependencies(file) {
 }
 
 export const scopedTailwindcss = function scopedTailwindcss(
-  { tailwindConfigPath } = {
+  { tailwindConfigPath, entryFilePath } = {
     tailwindConfigPath: "./tailwind.config.js",
+    entryFilePath: "./src/shadow.css",
   },
 ) {
   // What happens here:
@@ -30,6 +31,8 @@ export const scopedTailwindcss = function scopedTailwindcss(
   // - Css-vars defined in the :root, penetrate shadow dom boundaries
   // - So we can strip all theming for the "scoped" compiled tailwind styles to save bytes.
   // - Defining all variables in the :root once, is enough to theme the entire ui, including inside shadow dom
+
+  const entryFile = fs.readFileSync(path.resolve(entryFilePath)).toString();
 
   const projectConfigPath = path.resolve(tailwindConfigPath);
   const projectConfig = import(projectConfigPath);
@@ -62,10 +65,7 @@ export const scopedTailwindcss = function scopedTailwindcss(
         this.addWatchFile(dep);
       }
 
-      const css = `
-        @tailwind base;
-        @tailwind utilities;
-      `;
+      const css = entryFile;
 
       const peers = [...parsePeers(id)];
 
