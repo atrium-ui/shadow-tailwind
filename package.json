@@ -1,27 +1,28 @@
 {
-  "name": "shadow-tailwind",
-  "version": "1.1.0",
-  "description": "A Vite plugin to use computed Tailwind styles of files in your code.",
-  "type": "module",
-  "repository": "https://github.com/luckydye/shadow-tailwind",
-  "dependencies": {
-    "autoprefixer": "^10.4.19",
-    "dependency-tree": "^11.0.1",
-    "lightningcss": "^1.25.1",
-    "postcss": "^8.4.39",
-    "postcss-nested": "^6.0.1",
-    "tailwindcss": "^3.4.5"
-  },
-  "peerDependencies": {
-    "vite": "^5.2.7"
-  },
-  "exports": {
-    ".": {
-      "import": "./index.js",
-      "require": "./index.js"
-    },
-    "./types": {
-      "types": "./globals.d.ts"
-    }
-  }
+	"name": "shadow-tailwind",
+	"version": "1.1.1",
+	"description": "A Vite plugin to use computed Tailwind styles of files in your code.",
+	"type": "module",
+	"repository": "https://github.com/luckydye/shadow-tailwind",
+	"dependencies": {
+		"autoprefixer": "^10.4.19",
+		"dependency-tree": "^11.0.1",
+		"lightningcss": "^1.25.1",
+		"postcss": "^8.4.39",
+		"postcss-nested": "^6.0.1",
+		"tailwindcss": "^3.4.5",
+		"postcss-import": "^16.1.0"
+	},
+	"peerDependencies": {
+		"vite": "^5.2.7"
+	},
+	"exports": {
+		".": {
+			"import": "./index.js",
+			"require": "./index.js"
+		},
+		"./types": {
+			"types": "./globals.d.ts"
+		}
+	}
 }

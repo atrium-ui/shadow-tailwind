@@ -5,6 +5,7 @@ import dependencyTree from "dependency-tree";
 import { Features, transform } from "lightningcss";
 import postcss from "postcss";
 import postcssNested from "postcss-nested";
+import inlineImport from "postcss-import";
 import tailwindcss from "tailwindcss";
 
 export function dependencies(file) {
@@ -32,7 +33,8 @@ export const scopedTailwindcss = function scopedTailwindcss(
   // - So we can strip all theming for the "scoped" compiled tailwind styles to save bytes.
   // - Defining all variables in the :root once, is enough to theme the entire ui, including inside shadow dom
 
-  const entryFile = fs.readFileSync(path.resolve(entryFilePath)).toString();
+  const absoluteEntryFilePath = path.resolve(entryFilePath);
+  const entryFile = fs.readFileSync(absoluteEntryFilePath).toString();
 
   const projectConfigPath = path.resolve(tailwindConfigPath);
   const projectConfig = import(projectConfigPath);
@@ -65,8 +67,6 @@ export const scopedTailwindcss = function scopedTailwindcss(
         this.addWatchFile(dep);
       }
 
-      const css = entryFile;
-
       const peers = [...parsePeers(id)];
 
       // prepend peers
@@ -80,19 +80,20 @@ export const scopedTailwindcss = function scopedTailwindcss(
       const tailwindConfig = {
         ...(await projectConfig).default,
         content: [id, ...peers],
+        safelist: [],
       };
 
       let output;
       try {
         output = await postcss([
+          inlineImport,
           autoprefixer,
           postcssNested,
           tailwindcss({
             config: tailwindConfig,
           }),
-        ]).process(css, {
-          from: id,
-          to: id,
+        ]).process(entryFile, {
+          from: absoluteEntryFilePath,
         });
       } catch (e) {
         console.error(e);
