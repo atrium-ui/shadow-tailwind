@@ -1,0 +1,11 @@
+@reference "tailwindcss/theme.css";
+
+button {
+	appearance: unset;
+	background: transparent;
+	border: none;
+	padding: 0;
+	line-height: 1;
+	font-family: inherit;
+	cursor: pointer;
+}

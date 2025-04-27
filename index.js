@@ -47,23 +47,38 @@ export default function scopedTailwindcss(
 
     async load(id) {
       if (id.startsWith("shadow-tailwind:css")) {
+        this.addWatchFile(absoluteEntryFilePath);
+
         const sourceId = id.split(":")[2]?.replace("{", "").replace("}", "");
         return `export default \`${importMap.get(sourceId)}\`;`;
       }
     },
 
-    async transform(code, id) {
-      if (!path.extname(id).match(/tsx?|jsx?/g) || !code.includes("shadow-tailwind:css"))
-        return;
+    async handleHotUpdate({ server, modules, file, timestamp }) {
+      server.hot.send({ type: "full-reload" });
 
-      // @ts-ignore
-      this.addWatchFile(absoluteEntryFilePath);
+      const module = server.moduleGraph.getModuleById(
+        `shadow-tailwind:css:{${file}}`,
+      );
+      if (module) {
+        server.moduleGraph.invalidateModule(module);
+        return [module];
+      }
+    },
+
+    async transform(code, id) {
+      if (
+        !path.extname(id).match(/tsx?|jsx?/g) ||
+        !code.includes("shadow-tailwind:css")
+      )
+        return;
 
       const dependencies = new Set();
       const base = path.dirname(absoluteEntryFilePath);
 
       const input = `
         @source "${id}";
+        @import "tailwindcss/utilities.css";
         ${entryFile}
       `;
 
@@ -79,7 +94,8 @@ export default function scopedTailwindcss(
         sources: compiler.sources,
       });
 
-      const candidates = new Set<string>();
+      /** @type {Set<string>} */
+      const candidates = new Set();
       for (const candidate of scanner.scan()) {
         candidates.add(candidate);
       }
